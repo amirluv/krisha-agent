@@ -1,5 +1,6 @@
 # Секреты
 .env
+.streamlit/secrets.toml
 
 # ChromaDB — слишком большой (344MB), пересоздаётся через: python3 rag/indexer.py
 chroma_db/

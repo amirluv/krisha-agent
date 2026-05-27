@@ -2,7 +2,24 @@ import streamlit as st
 import os
 
 import config
-from agent.graph import run_agent, answer_followup
+from agent.graph import run_agent
+
+
+@st.cache_resource(show_spinner=False)
+def ensure_chroma():
+    """Пересоздаёт ChromaDB если её нет (первый запуск на сервере)."""
+    chroma_dir = config.CHROMA_DIR
+    needs_index = (
+        not os.path.isdir(chroma_dir)
+        or not any(os.scandir(chroma_dir))
+    )
+    if needs_index:
+        from rag.indexer import index_from_sqlite
+        with st.spinner("Первый запуск: индексируем базу объявлений (~3 мин)..."):
+            index_from_sqlite()
+
+
+ensure_chroma()
 
 st.set_page_config(
     page_title="KrishaAgent — AI анализ квартир",
@@ -198,20 +215,3 @@ if photo_urls:
                 with cols[i]:
                     st.image(url, use_container_width=True)
 
-st.divider()
-
-# --- Human-in-the-loop: вопросы ---
-st.subheader("Задай вопрос агенту")
-question = st.text_input(
-    "Например: стоит ли торговаться? что скрывает продавец? сравни с соседним объявлением",
-    placeholder="Твой вопрос...",
-    key="followup",
-)
-if st.button("Спросить", key="ask_btn") and question.strip():
-    with st.spinner("Агент думает..."):
-        try:
-            new_state = answer_followup(state, question.strip())
-            st.session_state.agent_state = new_state
-            st.rerun()
-        except Exception as e:
-            st.error(f"Ошибка: {e}")

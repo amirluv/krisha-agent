@@ -3,9 +3,16 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# --- API Keys ---
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
-LANGSMITH_API_KEY = os.getenv("LANGSMITH_API_KEY", "")
+# --- API Keys (локально — из .env, на Streamlit Cloud — из secrets) ---
+def _get_secret(key: str) -> str:
+    try:
+        import streamlit as st
+        return st.secrets.get(key, os.getenv(key, ""))
+    except Exception:
+        return os.getenv(key, "")
+
+OPENAI_API_KEY = _get_secret("OPENAI_API_KEY")
+LANGSMITH_API_KEY = _get_secret("LANGSMITH_API_KEY")
 
 # --- LangSmith ---
 os.environ["LANGCHAIN_TRACING_V2"] = "true"

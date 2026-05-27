@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif;
+    background: #f0ede8;
+    color: #0a0a0a;
+  }
+
+  .slide {
+    width: 297mm;
+    height: 210mm;
+    padding: 14mm 18mm 12mm;
+    display: flex;
+    flex-direction: column;
+    page-break-after: always;
+    page-break-inside: avoid;
+    position: relative;
+    overflow: hidden;
+    background: #fafaf8;
+  }
+
+  /* Footer brand line */
+  .footer {
+    position: absolute;
+    bottom: 9mm;
+    left: 18mm;
+    right: 18mm;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    color: #999;
+    text-transform: uppercase;
+    border-top: 1px solid #e0ddd8;
+    padding-top: 5px;
+  }
+
+  /* Section label */
+  .section-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #999;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-label::before {
+    content: '●';
+    color: #0a0a0a;
+    font-size: 8px;
+  }
+
+  /* Big editorial headline */
+  h1.editorial {
+    font-size: 64px;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -2px;
+    color: #0a0a0a;
+    margin-bottom: 6px;
+  }
+  h2.editorial {
+    font-size: 36px;
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -1px;
+    color: #0a0a0a;
+    margin-bottom: 12px;
+  }
+  h3.editorial {
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #0a0a0a;
+    margin-bottom: 8px;
+  }
+
+  /* Subtitle */
+  .subtitle {
+    font-size: 16px;
+    color: #666;
+    line-height: 1.5;
+    max-width: 520px;
+  }
+
+  /* Meta strip (horizontal key-value row) */
+  .meta-strip {
+    display: flex;
+    gap: 0;
+    border-top: 2px solid #0a0a0a;
+    border-bottom: 1px solid #e0ddd8;
+    margin: 16px 0;
+  }
+  .meta-item {
+    flex: 1;
+    padding: 10px 16px 10px 0;
+    border-right: 1px solid #e0ddd8;
+  }
+  .meta-item:last-child { border-right: none; }
+  .meta-key {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #999;
+    margin-bottom: 4px;
+  }
+  .meta-val {
+    font-size: 16px;
+    font-weight: 700;
+    color: #0a0a0a;
+  }
+  .meta-val.big {
+    font-size: 28px;
+    letter-spacing: -0.5px;
+  }
+
+  /* Divider */
+  .divider {
+    border: none;
+    border-top: 1px solid #e0ddd8;
+    margin: 12px 0;
+  }
+
+  /* Two-column split */
+  .split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    flex: 1;
+  }
+  .split-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+    flex: 1;
+  }
+  .split-wide {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 24px;
+    flex: 1;
+  }
+
+  /* Content block */
+  .block {
+    border-top: 2px solid #0a0a0a;
+    padding-top: 10px;
+  }
+  .block-label {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #999;
+    margin-bottom: 6px;
+  }
+  .block h4 {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: #0a0a0a;
+  }
+  .block p, .block li {
+    font-size: 12px;
+    color: #444;
+    line-height: 1.55;
+  }
+  .block ul {
+    list-style: none;
+    padding: 0;
+  }
+  .block ul li {
+    padding: 3px 0;
+    border-bottom: 1px solid #f0ede8;
+    display: flex;
+    gap: 8px;
+  }
+  .block ul li::before {
+    content: '—';
+    color: #ccc;
+    flex-shrink: 0;
+  }
+
+  /* Code block */
+  .code {
+    background: #f0ede8;
+    border-left: 3px solid #0a0a0a;
+    padding: 10px 12px;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 11px;
+    line-height: 1.6;
+    color: #333;
+  }
+  .code .c { color: #999; }
+  .code .k { color: #0a0a0a; font-weight: 700; }
+  .code .s { color: #1a5c35; }
+  .code .n { color: #1a3a6b; }
+
+  /* Table */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11px;
+  }
+  th {
+    text-align: left;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #999;
+    padding: 6px 8px;
+    border-bottom: 2px solid #0a0a0a;
+  }
+  td {
+    padding: 7px 8px;
+    border-bottom: 1px solid #e0ddd8;
+    vertical-align: top;
+    color: #333;
+  }
+  td strong { color: #0a0a0a; }
+  td.hl { font-weight: 700; color: #0a0a0a; }
+  td.good { color: #1a5c35; font-weight: 700; }
+  td.bad { color: #8b1a1a; font-weight: 700; }
+
+  /* Verdict box */
+  .verdict {
+    border: 2px solid #0a0a0a;
+    padding: 10px 14px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    margin-bottom: 12px;
+  }
+
+  /* Number highlight */
+  .big-num {
+    font-size: 48px;
+    font-weight: 800;
+    letter-spacing: -2px;
+    line-height: 1;
+    color: #0a0a0a;
+  }
+  .big-num-label {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #999;
+    margin-top: 2px;
+  }
+
+  /* Checklist item */
+  .check-item {
+    display: flex;
+    gap: 10px;
+    padding: 6px 0;
+    border-bottom: 1px solid #e0ddd8;
+    font-size: 12px;
+    color: #333;
+    align-items: flex-start;
+  }
+  .check-item .num {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: #999;
+    min-width: 22px;
+    padding-top: 2px;
+  }
+
+  /* Tag / badge */
+  .tag {
+    display: inline-block;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    border: 1px solid #0a0a0a;
+    padding: 2px 8px;
+    margin-right: 6px;
+    margin-bottom: 4px;
+    color: #0a0a0a;
+  }
+  .tag.filled {
+    background: #0a0a0a;
+    color: #fafaf8;
+  }
+  .tag.light {
+    border-color: #ccc;
+    color: #888;
+  }
+
+  /* Flow nodes */
+  .flow {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin: 8px 0;
+  }
+  .flow-node {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 6px 10px;
+    border: 2px solid #0a0a0a;
+    white-space: nowrap;
+    text-transform: uppercase;
+  }
+  .flow-node.dim {
+    border-color: #ccc;
+    color: #aaa;
+  }
+  .flow-node.human {
+    background: #0a0a0a;
+    color: #fafaf8;
+  }
+  .flow-arrow {
+    font-size: 12px;
+    color: #999;
+    padding: 0 4px;
+    flex-shrink: 0;
+  }
+
+  @media print {
+    body { background: #f0ede8; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .slide { page-break-after: always; }
+  }
+  @page { size: A4 landscape; margin: 0; }
+</style>
+</head>
+<body>
+
+<!-- ===== SLIDE 1: TITLE ===== -->
+<div class="slide">
+  <div style="flex:1;display:flex;flex-direction:column;justify-content:center;">
+    <div class="section-label">nFactorial · LLM Engineering · Demo Days 2026</div>
+    <h1 class="editorial">Krisha<br>Agent.</h1>
+    <p class="subtitle" style="margin-top:12px;">AI-агент для анализа квартир на Krisha.kz —<br>справедлива ли цена?</p>
+    <div class="meta-strip" style="margin-top:20px;">
+      <div class="meta-item"><div class="meta-key">Автор</div><div class="meta-val">Амирлан</div></div>
+      <div class="meta-item"><div class="meta-key">Технология</div><div class="meta-val">LangGraph + GPT-4o</div></div>
+      <div class="meta-item"><div class="meta-key">Данные</div><div class="meta-val">37 763 объявл.</div></div>
+      <div class="meta-item"><div class="meta-key">Точность</div><div class="meta-val">86.7%</div></div>
+    </div>
+  </div>
+  <div class="footer">
+    <span>KRISHAAGENT · DEMO DAYS 2026</span>
+    <span>01 / 15</span>
+  </div>
+</div>
+
+<!-- ===== SLIDE 2: PROBLEM ===== -->
+<div class="slide">
+  <div class="section-label">Секция 01 · Проблема</div>
+  <h2 class="editorial">Покупатель не знает —<br>переплачивает он или нет.</h2>
+  <hr class="divider">
+  <div class="split" style="margin-top:4px;">
+    <div>
+      <div class="check-item"><span class="num">01</span><span><strong>Ручной анализ</strong> 20–30 объявлений занимает несколько часов — результат субъективный.</span></div>
+      <div class="check-item"><span class="num">02</span><span><strong>Риелтор заинтересован в продаже</strong> — его совету покупатели не доверяют.</span></div>
+      <div class="check-item"><span class="num">03</span><span><strong>Реальное состояние ремонта</strong> по фото без эксперта оценить почти невозможно.</span></div>
+      <div class="check-item"><span class="num">04</span><span>Нет быстрого способа сравнить квартиру <strong>с похожими предложениями рынка</strong>.</span></div>
+    </div>
+    <div style="display:flex;flex-direction:column;justify-content:center;align-items:flex-start;padding-left:12px;border-left:1px solid #e0ddd8;">
+      <div class="block-label" style="margin-bottom:8px;">Целевой пользователь</div>
+      <p style="font-size:14px;color:#333;line-height:1.6;">Человек 25–40 лет, покупает первую квартиру в Алматы. Не имеет экспертизы в оценке недвижимости. Доверяет данным, а не мнениям.</p>
+    </div>
+  </div>
+  <div class="footer">
+    <span>KRISHAAGENT · DEMO DAYS 2026</span>
+    <span>02 / 15</span>
+  </div>
+</div>
+
+<!-- ===== SLIDE 3: SOLUTION ===== -->
+<div class="slide">
+  <div class="section-label">Секция 01 · Решение</div>
+  <h2 class="editorial" style="font-size:30px;">"Вставил ссылку —<br>получил вердикт за 20 секунд."</h2>
+  <div class="meta-strip">
+    <div class="meta-item"><div class="meta-key">В базе</div><div class="meta-val big">37 763</div><div style="font-size:10px;color:#999;">реальных объявлений</div></div>
+    <div class="meta-item"><div class="meta-key">Анализ фото</div><div class="meta-val big">10</div><div style="font-size:10px;color:#999;">GPT-4o Vision</div></div>
+    <div class="meta-item"><div class="meta-key">Районов Алматы</div><div class="meta-val big">8</div><div style="font-size:10px;color:#999;">в базе данных</div></div>
+    <div class="meta-item"><div class="meta-key">Стоимость запроса</div><div class="meta-val big">$0.12</div><div style="font-size:10px;color:#999;">один анализ</div></div>
+  </div>
+  <div class="split-3" style="margin-top:8px;">
+    <div class="block">
+      <div class="block-label">Шаг 01</div>
+      <h4>Ссылка на объявление</h4>
+      <p>krisha.kz/a/show/... — агент сам парсит страницу</p>
+    </div>
+    <div class="block">
+      <div class="block-label">Шаг 02</div>
+      <h4>Агент анализирует</h4>
+      <p>Данные объявления · Рынок района · Все фото</p>
+    </div>
+    <div class="block">
+      <div class="block-label">Шаг 03</div>
+      <h4>Вердикт с цифрами</h4>
+      <p>Выгодно · Рыночная цена · Дорого</p>
+    </div>
+  </div>
+  <div class="footer">
+    <span>KRISHAAGENT · DEMO DAYS 2026</span>
+    <span>03 / 15</span>
+  </div>
+</div>
+
+<!-- ===== SLIDE 4: DEMO EXAMPLE ===== -->
+<div class="slide">
+  <div class="section-label">Секция 01 · Пример работы</div>
+  <h2 class="editorial" style="font-size:26px;">Анализ реального объявления.</h2>
+  <hr class="divider">
+  <div class="split-wide">
+    <div>
+      <div class="code">
+<span class="c"># Вход</span>
+krisha.kz/a/show/1010382901
+
+<span class="c"># fetch_listing →</span>
+  2-комн · <span class="k">65м²</span> · 7/14 эт
+  Бостандыкский · <span class="n">50 000 000₸</span>
+
+<span class="c"># analyze_photos →</span>
+  score: <span class="k">7/10</span> · ремонт: не нужен
+  корректировка: <span class="s">+3%</span>
+
+<span class="c"># evaluate_price →</span>
+  рынок: <span class="k">750 000₸/м²</span>
+  монолит 2017: <span class="s">+2%</span> · итого: <span class="s">+5%</span>
+  справедливо: <span class="k">47.5–55.8 млн</span>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div class="verdict">📊 РЫНОЧНАЯ ЦЕНА — цена соответствует рынку</div>
+      <table>
+        <tr><th>Параметр</th><th>Значение</th></tr>
+        <tr><td>Цена продавца</td><td class="hl">769 230₸/м²</td></tr>
+        <tr><td>Средний рынок</td><td>750 000₸/м²</td></tr>
+        <tr><td>Справедливая цена</td><td class="good">47.5–55.8 млн</td></tr>
+      </table>
+      <div class="block" style="margin-top:4px;">
+        <div class="block-label">Рекомендация агента</div>
+        <p>Цена в рыночном диапазоне. Торгуйтесь на 5–7% — монолит 2017 уже не новостройка, ремонт хороший, но не свежий.</p>
+      </div>
+    </div>
+  </div>
+  <div class="footer">
+    <span>KRISHAAGENT · DEMO DAYS 2026</span>
+    <span>04 / 15</span>
+  </div>
+</div>
+
+<!-- ===== SLIDE 5: LANGGRAPH ARCH ===== -->
+<div class="slide">
+  <div class="section-label">Секция 02 · Архитектура</div>
+  <h2 class="editorial" style="font-size:28px;">LangGraph граф — ветвление<br>и human-in-the-loop.</h2>
+  <hr class="divider">
+  <div style="margin:8px 0 12px;">
+    <div class="flow">
+      <div class="flow-node">START</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">fetch_listing</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node dim">search_similar</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node dim">analyze_photos</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node dim">evaluate_price</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node dim">generate_rec</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node human">human_review</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">END</div>
+    </div>
+    <p style="font-size:10px;color:#999;margin-top:4px;">↳ ошибка загрузки → сразу END &nbsp;&nbsp;&nbsp; ↳ пользователь задаёт вопрос → human_review отвечает в контексте</p>
+  </div>
+  <div class="split-3">
+    <div class="block">
+      <div class="block-label">Ветвление</div>
+      <h4>После fetch_listing</h4>
+      <p>404 или блокировка → граф уходит в END с сообщением. Пользователь не видит пустой экран.</p>
+    </div>
+    <div class="block">
+      <div class="block-label">Human-in-the-loop</div>
+      <h4>human_review</h4>
+      <p>Ждёт follow-up вопрос. GPT-4o-mini отвечает в контексте без повторного запуска пайплайна.</p>
+    </div>
+    <div class="block">
+      <div class="block-label">Почему LangGraph</div>
+      <h4>А не LCEL / CrewAI</h4>
+      <p>LCEL — нет human-in-the-loop. CrewAI — избыточен для одного агента. LangGraph — нужный минимум.</p>
+    </div>
+  </div>
+  <div class="footer">
+    <span>KRISHAAGENT · DEMO DAYS 2026</span>
+    <span>05 / 15</span>
+  </div>
+</div>
+
+<!-- ===== SLIDE 6: TECH STACK ===== -->
+<div class="slide">
+  <div class="section-label">Секция 02 · Стек</div>
+  <h2 class="editorial" style="font-size:28px;">Каждый выбор — обоснован.</h2>
+  <hr class="divider">
+  <table style="margin-top:4px;">
+    <tr>
+      <th>Компонент</th>
+      <th>Выбор</th>
+      <th>Почему именно это</th>
+      <th>Альтернатива — почему отказались</th>
+    </tr>
+    <tr><td>Оркестрация</td><td class="hl">LangGraph</td><td>Ветвления + human-in-the-loop из коробки</td><td>CrewAI — избыточен для одного агента</td></tr>
+    <tr><td>Vision анализ</td><td class="hl">GPT-4o</td><td>Лучшее качество для анализа фото ремонта</td><td>Gemini — хуже на русских подписях</td></tr>
+    <tr><td>Рекомендации</td><td class="hl">GPT-4o-mini</td><td>A/B тест: качество = gpt-4o, цена в 10× меньше</td><td>gpt-4o — избыточен, доказано тестом</td></tr>
+    <tr><td>Эмбеддинги</td><td class="hl">text-embedding-3-small</td><td>$0.02/1M токенов, достаточно для коротких текстов</td><td>large — в 5× дороже без прироста качества</td></tr>
+    <tr><td>Vector DB</td><td class="hl">ChromaDB</td><td>Локальная, 36k документов в памяти, поиск 20мс</td><td>Qdrant — нужен отдельный сервер</td></tr>
+    <tr><td>База данных</td><td class="hl">SQLite</td><td>37k строк — overhead не нужен, IQR фильтр</td><td>PostgreSQL — избыточен для read-only</td></tr>
+    <tr><td>MCP сервер</td><td class="hl">FastMCP</td><td>Минимум кода, автосхема для LLM</td><td>REST API — нет JSON-схемы для модели</td></tr>
+    <tr><td>Мониторинг</td><td class="hl">LangSmith</td><td>Трейсы каждой ноды, токены, latency</td><td>—</td></tr>
+  </table>
+  <div class="footer">
+    <span>KRISHAAGENT · DEMO DAYS 2026</span>
+    <span>06 / 15</span>
+  </div>
+</div>
+
+<!-- ===== SLIDE 7: PRICING ALGORITHM ===== -->
+<div class="slide">
+  <div class="section-label">Секция 03 · Ценовой движок</div>
+  <h2 class="editorial" style="font-size:28px;">Как считается<br>справедливая цена.</h2>
+  <hr class="divider">
+  <div class="split">
+    <div>
+      <div class="code">
+<span class="c"># Шаг 1: рыночная база</span>
+avg_m2 = SQLite(<span class="n">district</span>, <span class="n">rooms</span>,
+         area <span class="k">±30%</span>, IQR фильтр)
+
+<span class="c"># Шаг 2: корректировки</span>
+год: до 1950 → <span class="bad" style="color:#8b1a1a;">−35%</span>  2020+ → <span class="s">+8%</span>
+этаж: 1-й → <span class="bad" style="color:#8b1a1a;">−5%</span>  последний → <span class="bad" style="color:#8b1a1a;">−3%</span>
+тип: панель → <span class="bad" style="color:#8b1a1a;">−10%</span>  монолит → <span class="s">+5%</span>
+фото: 1-2 → <span class="bad" style="color:#8b1a1a;">−15%</span>  9-10 → <span class="s">+10%</span>
+
+<span class="c"># Шаг 3: диапазон ±8%</span>
+fair = avg_m2 × (1 + adj%) × area
+range = [fair × <span class="k">0.92</span>, fair × <span class="k">1.08</span>]
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div class="block">
+        <div class="block-label">Почему алгоритм, а не LLM</div>
+        <p>Детерминированный код = предсказуемость. Каждый коэффициент задокументирован. LLM мог бы галлюцинировать числа.</p>
+      </div>
+      <div class="block">
+        <div class="block-label">Почему ±30% по площади</div>
+        <p>60м² сравнивается только с 42–78м², не со всеми 2-комнатными. Без фильтра медиана искажается крайними значениями.</p>
+      </div>
+      <div class="block">
+        <div class="block-label">Почему IQR</div>
+        <p>Убирает нотариальные (1₸) и ошибки парсинга. Медиана устойчива к выбросам — нотариальные сделки не искажают рынок.</p>
+      </div>
+    </div>
+  </div>
+  <div class="footer">
+    <span>KRISHAAGENT · DEMO DAYS 2026</span>
+    <span>07 / 15</span>
+  </div>
+</div>
+
+<!-- ===== SLIDE 8: VISION ===== -->
+<div class="slide">
+  <div class="section-label">Секция 03 · Мультимодальность</div>
+  <h2 class="editorial" style="font-size:28px;">GPT-4o Vision —<br>не для галочки.</h2>
+  <hr class="divider">
+  <div class="split">
+    <div>
+      <table>
+        <tr><th>Score</th><th>Значение</th><th>Корректировка</th></tr>
+        <tr><td>9–10</td><td>Евроремонт / новостройка</td><td class="good">+10%</td></tr>
+        <tr><td>7–8</td><td>Свежий ремонт</td><td class="good">+3%</td></tr>
+        <tr><td>5–6</td><td>Жилое, косметика нужна</td><td>0%</td></tr>
+        <tr><td>3–4</td><td>Требует полного ремонта</td><td class="bad">−8%</td></tr>
+        <tr><td>1–2</td><td>Аварийное состояние</td><td class="bad">−15%</td></tr>
+      </table>
+      <div style="margin-top:10px;">
+        <div class="check-item"><span class="num">·</span><span>Все 10 фото из объявления в одном запросе к GPT-4o</span></div>
+        <div class="check-item"><span class="num">·</span><span>Жёсткие якоря в промпте — модель не ставит 7–8 "по умолчанию"</span></div>
+        <div class="check-item"><span class="num">·</span><span>Флаг <strong>low_confidence</strong> для тёмных/размытых фото — не штрафуем</span></div>
+        <div class="check-item"><span class="num">·</span><span>Корректировка % — детерминированная функция, не модель</span></div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;padding-left:12px;border-left:1px solid #e0ddd8;">
+      <div class="block" style="border-color:#8b1a1a;">
+        <div class="block-label" style="color:#8b1a1a;">Без Vision</div>
+        <p>Продавец пишет "хороший ремонт". Агент верит → вердикт <strong>"выгодно"</strong>.</p>
+      </div>
+      <div class="block" style="border-color:#1a5c35;">
+        <div class="block-label" style="color:#1a5c35;">С Vision</div>
+        <p>Агент видит советские батареи и штукатурку → score=3 → −8% → вердикт <strong>"дорого"</strong>.</p>
+      </div>
+      <div class="block">
+        <div class="block-label">Промпт v1 → v2</div>
+        <p>v1: модель ставила 7–8 почти всем. Исправление: якоря шкалы, убрали освещённость, % в детерминированный код.</p>
+      </div>
+    </div>
+  </div>
+  <div class="footer">
+    <span>KRISHAAGENT · DEMO DAYS 2026</span>
+    <span>08 / 15</span>
+  </div>
+</div>
+
+<!-- ===== SLIDE 9: RAG ===== -->
+<div class="slide">
+  <div class="section-label">Секция 03 · RAG Пайплайн</div>
+  <h2 class="editorial" style="font-size:28px;">36 686 эмбеддингов —<br>поиск за 20мс.</h2>
+  <hr class="divider">
+  <div class="split">
+    <div>
+      <div class="code">
+<span class="c"># Источник</span>
+SQLite <span class="k">37 763</span> объявлений
+  ↓ indexer.py (батчи по 500)
+  ↓ text-embedding-3-small
+
+<span class="c"># Чанк = 1 объявление</span>
+<span class="s">"2-комн, Бостандыкский,
+ 65м², 4/9 эт, 42 000 000₸,
+ цена м²: 646 154₸"</span>
+
+<span class="c"># Поиск при запросе</span>
+query = <span class="s">"2-комн Бостандыкский 65м²"</span>
+results = chroma.query(top_k=<span class="k">5</span>)
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <table>
+        <tr><th>Решение</th><th>Выбор</th><th>Почему</th></tr>
+        <tr><td>Chunking</td><td class="hl">1 объявл = 1 чанк</td><td>Атомарная единица</td></tr>
+        <tr><td>Embeddings</td><td class="hl">text-emb-3-small</td><td>В 5× дешевле large</td></tr>
+        <tr><td>Vector DB</td><td class="hl">ChromaDB</td><td>Локально, нет latency</td></tr>
+        <tr><td>Retrieval</td><td class="hl">top-5 cosine</td><td>Достаточно для сравнения</td></tr>
+        <tr><td>Reranker</td><td style="color:#999;">нет</td><td>Для 5 результатов overhead не оправдан</td></tr>
+      </table>
+      <div class="block">
+        <div class="block-label">Баг, который нашли</div>
+        <p>RAG-объявления имели url="" → дедупликация схлопывала все 5 в 1. Исправление: ключ дедупа = title, если url пустой.</p>
+      </div>
+    </div>
+  </div>
+  <div class="footer">
+    <span>KRISHAAGENT · DEMO DAYS 2026</span>
+    <span>09 / 15</span>
+  </div>
+</div>
+
+<!-- ===== SLIDE 10: MCP ===== -->
+<div class="slide">
+  <div class="section-label">Секция 03 · MCP Сервер</div>
+  <h2 class="editorial" style="font-size:28px;">3 инструмента — подключается<br>к любому MCP-клиенту.</h2>
+  <hr class="divider">
+  <div class="split-3">
+    <div class="block">
+      <div class="block-label">Tool 01</div>
+      <h4>search_listings</h4>
+      <div class="code" style="margin-top:8px;font-size:10px;">
+district: "Бостандыкский"
+rooms: 2
+price_max: 60_000_000
+→ [{title, price, url}]
+      </div>
+      <p style="margin-top:8px;font-size:11px;color:#666;">Поиск объявлений по параметрам через Krisha API</p>
+    </div>
+    <div class="block">
+      <div class="block-label">Tool 02</div>
+      <h4>get_price_statistics</h4>
+      <div class="code" style="margin-top:8px;font-size:10px;">
+district: "Медеуский"
+rooms: 3
+→ {avg_m2: 920_000,
+   median: 900_000,
+   trend_4w: +0.3%}
+      </div>
+      <p style="margin-top:8px;font-size:11px;color:#666;">Статистика рынка из Krisha Analytics</p>
+    </div>
+    <div class="block">
+      <div class="block-label">Tool 03</div>
+      <h4>estimate_fair_value</h4>
+      <div class="code" style="margin-top:8px;font-size:10px;">
+area_sqm: 65.0
+floor: 5, floors_total: 12
+condition: "хороший"
+→ {fair_min: 45M,
+   fair_max: 53M}
+      </div>
+      <p style="margin-top:8px;font-size:11px;color:#666;">Оценка справедливой стоимости</p>
+    </div>
+  </div>
+  <div style="margin-top:14px;border-top:1px solid #e0ddd8;padding-top:10px;">
+    <p style="font-size:12px;color:#555;"><strong style="color:#0a0a0a;">Почему MCP, а не REST API:</strong> FastMCP автоматически генерирует JSON-схему — LLM понимает инструменты без дополнительного кода. Подключается к Claude Desktop, Cursor и любому MCP-клиенту без изменений.</p>
+  </div>
+  <div class="footer">
+    <span>KRISHAAGENT · DEMO DAYS 2026</span>
+    <span>10 / 15</span>
+  </div>
+</div>
+
+<!-- ===== SLIDE 11: EVALS ===== -->
+<div class="slide">
+  <div class="section-label">Секция 04 · Эвалюации</div>
+  <h2 class="editorial" style="font-size:28px;">Golden Dataset — 30 примеров,<br>3 метрики.</h2>
+  <hr class="divider">
+  <div class="split">
+    <div>
+      <div class="meta-strip" style="margin-top:0;margin-bottom:12px;">
+        <div class="meta-item"><div class="meta-key">Выгодно</div><div class="meta-val big">11</div></div>
+        <div class="meta-item"><div class="meta-key">Дорого</div><div class="meta-val big">13</div></div>
+        <div class="meta-item"><div class="meta-key">Рыночная</div><div class="meta-val big">6</div></div>
+      </div>
+      <div class="block" style="margin-bottom:10px;">
+        <div class="block-label">Edge Cases</div>
+        <p>Здание 1940 года (−35%) · первый этаж + хороший ремонт · панель с евроремонтом · 1955 в дорогом Медеуском</p>
+      </div>
+      <div class="block">
+        <div class="block-label">Запуск</div>
+        <div class="code" style="font-size:10px;margin-top:6px;">
+python3 evals/run_evals.py \
+  --dataset golden_dataset.json \
+  --config B --output results.json
+        </div>
+      </div>
+    </div>
+    <div>
+      <table>
+        <tr><th>Метрика</th><th>Что измеряет</th><th>Ограничение</th></tr>
+        <tr><td class="hl">Verdict Accuracy</td><td>Доля правильных вердиктов</td><td>Не показывает качество объяснения</td></tr>
+        <tr><td class="hl">Relevance Score</td><td>Покрытие ключевых факторов</td><td>Keyword matching — не смысл</td></tr>
+        <tr><td class="hl">LLM-as-Judge</td><td>GPT-4o-mini оценивает 1–5</td><td>Нет реальных пользовательских оценок</td></tr>
+      </table>
+      <div class="code" style="margin-top:12px;font-size:11px;">
+✅ eval_001 | выгодно | rel=0.50 | judge=5/5
+✅ eval_002 | дорого  | rel=1.00 | judge=5/5
+❌ eval_003 | дорого  | rel=0.60 | judge=5/5
+      </div>
+    </div>
+  </div>
+  <div class="footer">
+    <span>KRISHAAGENT · DEMO DAYS 2026</span>
+    <span>11 / 15</span>
+  </div>
+</div>
+
+<!-- ===== SLIDE 12: A/B TEST ===== -->
+<div class="slide">
+  <div class="section-label">Секция 04 · A/B Тест</div>
+  <h2 class="editorial" style="font-size:28px;">Оправдывает ли GPT-4o<br>10× рост стоимости?</h2>
+  <hr class="divider">
+  <div class="split">
+    <div>
+      <div class="block" style="margin-bottom:12px;">
+        <div class="block-label">Гипотеза</div>
+        <p>GPT-4o для рекомендации даёт значительно лучший LLM-judge score и оправдывает 10× рост стоимости.</p>
+      </div>
+      <table>
+        <tr><th>Метрика</th><th>Config A · gpt-4o-mini</th><th>Config B · gpt-4o</th></tr>
+        <tr><td>Verdict Accuracy</td><td class="good">86.7%</td><td>86.7%</td></tr>
+        <tr><td>Relevance Score</td><td class="good">0.851 ↑</td><td>0.794</td></tr>
+        <tr><td>LLM Judge</td><td class="good">4.97/5 ↑</td><td>4.90/5</td></tr>
+        <tr><td>Стоимость/запрос</td><td class="good">~$0.01</td><td class="bad">~$0.10</td></tr>
+      </table>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;padding-left:12px;border-left:1px solid #e0ddd8;">
+      <div class="block" style="border-color:#1a5c35;">
+        <div class="block-label" style="color:#1a5c35;">Вывод: гипотеза не подтвердилась</div>
+        <p>Accuracy одинакова — вердикт детерминирован алгоритмом, не моделью. Mini не хуже gpt-4o при цене в 10× меньше.</p>
+      </div>
+      <div class="block">
+        <div class="block-label">Решение</div>
+        <p>GPT-4o <strong>остаётся для Vision</strong> — замены нет. Рекомендации переходят на <strong>gpt-4o-mini</strong> — экономия 5–10×.</p>
+      </div>
+      <div class="block">
+        <div class="block-label">4 ошибочных вердикта</div>
+        <p>Все 4 — граничные "рыночная цена", одинаковые в обоих конфигах. Ошибка алгоритма, не модели.</p>
+      </div>
+    </div>
+  </div>
+  <div class="footer">
+    <span>KRISHAAGENT · DEMO DAYS 2026</span>
+    <span>12 / 15</span>
+  </div>
+</div>
+
+<!-- ===== SLIDE 13: LANGSMITH ===== -->
+<div class="slide">
+  <div class="section-label">Секция 04 · Мониторинг</div>
+  <h2 class="editorial" style="font-size:28px;">100 трейсов —<br>каждая нода видна.</h2>
+  <hr class="divider">
+  <div class="split">
+    <div>
+      <div class="code" style="margin-bottom:12px;">
+<span class="c"># config.py — 3 строки</span>
+os.environ[<span class="s">"LANGCHAIN_TRACING_V2"</span>] = <span class="k">"true"</span>
+os.environ[<span class="s">"LANGCHAIN_PROJECT"</span>] = <span class="k">"krisha-agent"</span>
+os.environ[<span class="s">"LANGCHAIN_API_KEY"</span>] = key
+
+<span class="c"># Всё. LangGraph логирует каждую ноду автоматически.</span>
+      </div>
+      <div class="meta-strip" style="margin-top:0;">
+        <div class="meta-item"><div class="meta-key">Всего трейсов</div><div class="meta-val big">100</div></div>
+        <div class="meta-item"><div class="meta-key">Полных запусков</div><div class="meta-val big">12</div></div>
+        <div class="meta-item"><div class="meta-key">Нод в каждом</div><div class="meta-val big">6</div></div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;padding-left:12px;border-left:1px solid #e0ddd8;">
+      <div class="block">
+        <div class="block-label">Что видно в дашборде</div>
+        <div class="check-item"><span class="num">·</span><span>Дерево нод — inputs и outputs каждой</span></div>
+        <div class="check-item"><span class="num">·</span><span>Latency: analyze_photos ~8с (Vision), evaluate_price ~0.1с (SQLite)</span></div>
+        <div class="check-item"><span class="num">·</span><span>Токены и стоимость каждого LLM-вызова</span></div>
+        <div class="check-item"><span class="num">·</span><span>История всех запросов с фильтрацией</span></div>
+      </div>
+      <div class="block">
+        <div class="block-label">Как открыть</div>
+        <p>smith.langchain.com → Projects → krisha-agent → Last 30 days</p>
+      </div>
+    </div>
+  </div>
+  <div class="footer">
+    <span>KRISHAAGENT · DEMO DAYS 2026</span>
+    <span>13 / 15</span>
+  </div>
+</div>
+
+<!-- ===== SLIDE 14: LESSONS ===== -->
+<div class="slide">
+  <div class="section-label">Секция 05 · Уроки разработки</div>
+  <h2 class="editorial" style="font-size:28px;">Гипотезы, которые<br>не подтвердились.</h2>
+  <hr class="divider">
+  <div class="split-3">
+    <div class="block">
+      <div class="block-label">01 · Live Krisha API</div>
+      <h4>Гипотеза</h4>
+      <p style="margin-bottom:8px;">API будет возвращать живые объявления для поиска похожих.</p>
+      <h4>Реальность</h4>
+      <p style="margin-bottom:8px;">Krisha блокирует автозапросы.</p>
+      <h4>Решение</h4>
+      <p>Локальный RAG на 36k объявлений из заранее собранной базы.</p>
+    </div>
+    <div class="block">
+      <div class="block-label">02 · GPT-4o vs Mini</div>
+      <h4>Гипотеза</h4>
+      <p style="margin-bottom:8px;">GPT-4o значительно лучше для текстовых рекомендаций.</p>
+      <h4>Реальность</h4>
+      <p style="margin-bottom:8px;">A/B тест опроверг: accuracy одинакова, relevance у mini выше.</p>
+      <h4>Решение</h4>
+      <p>Mini для текста, gpt-4o только для Vision.</p>
+    </div>
+    <div class="block">
+      <div class="block-label">03 · Vision & освещённость</div>
+      <h4>Гипотеза</h4>
+      <p style="margin-bottom:8px;">Освещённость — важный критерий оценки состояния.</p>
+      <h4>Реальность</h4>
+      <p style="margin-bottom:8px;">Модель путала тёмные фото с плохим ремонтом.</p>
+      <h4>Решение</h4>
+      <p>Убрали освещённость, добавили low_confidence флаг.</p>
+    </div>
+  </div>
+  <div style="margin-top:12px;border-top:1px solid #e0ddd8;padding-top:8px;display:flex;gap:8px;flex-wrap:wrap;">
+    <span class="tag light">5-комн: мало данных</span>
+    <span class="tag light">Без фото: нет Vision</span>
+    <span class="tag light">Цены в USD: парсер ожидает тенге</span>
+    <span class="tag light">Районы вне 8 поддерживаемых</span>
+  </div>
+  <div class="footer">
+    <span>KRISHAAGENT · DEMO DAYS 2026</span>
+    <span>14 / 15</span>
+  </div>
+</div>
+
+<!-- ===== SLIDE 15: SUMMARY ===== -->
+<div class="slide">
+  <div class="section-label">Секция 05 · Итог</div>
+  <h2 class="editorial" style="font-size:28px;">Что сделано и что дальше.</h2>
+  <hr class="divider">
+  <div class="split">
+    <div>
+      <div class="block-label" style="margin-bottom:8px;">Реализовано</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;">
+        <span class="tag filled">LangGraph 6 нод</span>
+        <span class="tag filled">MCP 3 tools</span>
+        <span class="tag filled">SKILL.md</span>
+        <span class="tag filled">RAG 36k</span>
+        <span class="tag filled">GPT-4o Vision</span>
+        <span class="tag filled">Human-in-loop</span>
+        <span class="tag filled">SQLite 37k</span>
+        <span class="tag filled">LangSmith 100 трейсов</span>
+        <span class="tag filled">Golden dataset 30</span>
+        <span class="tag filled">A/B тест</span>
+        <span class="tag filled">EVALS.md</span>
+        <span class="tag filled">GitHub</span>
+      </div>
+      <div class="block-label" style="margin-bottom:8px;">Следующий шаг</div>
+      <div class="check-item"><span class="num">01</span><span>Telegram бот вместо Streamlit — удобнее для мобильных</span></div>
+      <div class="check-item"><span class="num">02</span><span>Автообновление базы раз в неделю — актуальные цены</span></div>
+      <div class="check-item"><span class="num">03</span><span>Расширить на другие города Казахстана</span></div>
+    </div>
+    <div style="display:flex;flex-direction:column;justify-content:center;gap:20px;padding-left:20px;border-left:2px solid #0a0a0a;">
+      <div>
+        <div class="big-num">86.7%</div>
+        <div class="big-num-label">Точность вердиктов</div>
+      </div>
+      <div>
+        <div class="big-num" style="font-size:36px;">4.97 / 5</div>
+        <div class="big-num-label">LLM Judge Score</div>
+      </div>
+      <div style="border-top:1px solid #e0ddd8;padding-top:12px;">
+        <div class="block-label">Репозиторий</div>
+        <p style="font-size:13px;font-weight:700;margin-top:4px;">github.com/amirluv/krisha-agent</p>
+      </div>
+    </div>
+  </div>
+  <div class="footer">
+    <span>KRISHAAGENT · DEMO DAYS 2026</span>
+    <span>15 / 15</span>
+  </div>
+</div>
+
+</body>
+</html>
