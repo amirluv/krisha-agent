@@ -1,0 +1,26 @@
+# Секреты
+.env
+
+# ChromaDB — слишком большой (344MB), пересоздаётся через: python3 rag/indexer.py
+chroma_db/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+venv/
+.venv/
+*.egg-info/
+
+# Логи
+*.log
+
+# Checkpoint скрапера
+data/scraper_checkpoint.json
+
+# macOS
+.DS_Store
+
+# IDE
+.idea/
+.vscode/
